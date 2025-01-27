@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  master:
+    image: mysql:5.7
+    container_name: mysql_master
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: master_db
+      MYSQL_USER: master_user
+      MYSQL_PASSWORD: master_password
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./master_data:/var/lib/mysql
+      - ./master-config:/etc/mysql/conf.d  # Mount the directory instead
+  slave:
+    image: mysql:5.7
+    container_name: mysql_slave
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: master_db
+      MYSQL_USER: master_user
+      MYSQL_PASSWORD: master_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./slave_data:/var/lib/mysql
+      - ./slave-config/:/etc/mysql/conf.d  # Mount the slave's config
+    # depends_on:
+    #   - master
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    environment:
+      WORDPRESS_DB_HOST: mysql_slave:3306  # Point to the master database
+      WORDPRESS_DB_NAME: master_db
+      WORDPRESS_DB_USER: master_user
+      WORDPRESS_DB_PASSWORD: master_password
+    ports:
+      - "8799:80"
+    depends_on:
+      - slave
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: always
+    ports:
+      - "3010:3001"
+    volumes:
+      - uptime-kuma:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  master_data:
+  slave_data:
+  uptime-kuma:
