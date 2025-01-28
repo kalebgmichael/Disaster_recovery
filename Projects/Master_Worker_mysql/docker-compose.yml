@@ -41,17 +41,17 @@ services:
       - "8799:80"
     depends_on:
       - slave
-  uptime-kuma:
-    image: louislam/uptime-kuma:1
-    container_name: uptime-kuma
-    restart: always
-    ports:
-      - "3010:3001"
-    volumes:
-      - uptime-kuma:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock
+  # uptime-kuma:
+  #   image: louislam/uptime-kuma:1
+  #   container_name: uptime-kuma
+  #   restart: always
+  #   ports:
+  #     - "3010:3001"
+  #   volumes:
+  #     - uptime-kuma:/app/data
+  #     - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   master_data:
   slave_data:
-  uptime-kuma:
+  # uptime-kuma:

@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   wordpress:
     image: wordpress:latest
@@ -18,7 +17,7 @@ services:
   db:
     image: mysql:5.7
     ports:
-      - "8798:3306"
+      - "8788:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: wp_database
