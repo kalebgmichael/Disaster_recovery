@@ -5,6 +5,12 @@ Master_Worker_mysql/slave_data/
 MASTER_WORKER_NEW/master_data/
 MASTER_WORKER_NEW/slave_data/
 
+Multiple_site/master_data/
+Multiple_site/slave_data/
+
+warm_standby_sextet/master_data/
+warm_standby_sextet/slave_data/
+
 SEXTET/SEXTET_NEW/master_data/
 SEXTET/SEXTET_NEW/slave_data/
 

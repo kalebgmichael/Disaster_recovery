@@ -14,9 +14,9 @@ services:
     volumes:
       - ./master_data:/var/lib/mysql
       - ./master-config:/etc/mysql/conf.d  # Mount the directory instead
-  slave:
+  worker:
     image: mysql:5.7
-    container_name: mysql_slave
+    container_name: mysql_worker
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: master_db
@@ -25,22 +25,22 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./slave_data:/var/lib/mysql
-      - ./slave-config/:/etc/mysql/conf.d  # Mount the slave's config
+      - ./worker_data:/var/lib/mysql
+      - ./worker-config/:/etc/mysql/conf.d  # Mount the worker's config
     # depends_on:
     #   - master
   wordpress:
     image: wordpress:latest
     container_name: wordpress
     environment:
-      WORDPRESS_DB_HOST: mysql_slave:3306  # Point to the master database
+      WORDPRESS_DB_HOST: mysql_worker:3306  # Point to the master database
       WORDPRESS_DB_NAME: master_db
       WORDPRESS_DB_USER: master_user
       WORDPRESS_DB_PASSWORD: master_password
     ports:
       - "8799:80"
     depends_on:
-      - slave
+      - worker
   # uptime-kuma:
   #   image: louislam/uptime-kuma:1
   #   container_name: uptime-kuma
@@ -53,5 +53,5 @@ services:
 
 volumes:
   master_data:
-  slave_data:
+  worker_data:
   # uptime-kuma:
