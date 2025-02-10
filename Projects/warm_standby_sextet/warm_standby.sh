@@ -244,7 +244,8 @@ else
       WORDPRESS_CONTAINER_NAME=${WORDPRESS_CONTAINERS_master_down[$i]}
       WORDPRESS_PORT=${WORDPRESS_PORTS_master_down[$i]}
       if is_container_exists $WORDPRESS_CONTAINER_NAME; then
-          echo "WordPress container exists"
+          echo "$WORDPRESS_CONTAINER_NAME exists"
+          docker rm -f $WORDPRESS_CONTAINER_NAME4
           if ! is_container_running $WORKER_CONTAINER_NAME; then
 
             ## restart worker db: since if master was off and is up again but worker is still down: it will avoid the rebuild of the wordpress container. 
