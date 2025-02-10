@@ -214,7 +214,7 @@ if ! is_container_running $MASTER_CONTAINER_NAME; then
         restart_mysql_container "$WORKER_CONTAINER_NAME" "$WORKER_DATA_DIR"
     else
           if [ "$WORDPRESS_CONTAINER_NAME" == "wordpress2" ]; then
-            echo "Running New WordPress container with worker DB... since master is down"
+            echo "Running New $WORDPRESS_CONTAINER_NAME with worker DB... since master is down"
               WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
                # Run the WordPress container and worker db is working
             docker run -d \
@@ -227,11 +227,11 @@ if ! is_container_running $MASTER_CONTAINER_NAME; then
             -p $WORDPRESS_PORT:80 \
             wordpress:latest
 
-            echo "New WordPress with worker DB setup complete. Access it at http://localhost:$WORDPRESS_PORT"
+            echo "New $WORDPRESS_CONTAINER_NAME with worker DB setup complete. Access it at http://localhost:$WORDPRESS_PORT"
             ## restart master after the worker has taken over
             restart_mysql_container "$MASTER_CONTAINER_NAME" "$MASTER_DATA_DIR"
           else
-          echo " WordPress container one not running since master is down..."
+          echo " $WORDPRESS_CONTAINER_NAME one not running since master is down..."
           fi
     fi 
   done 
@@ -242,9 +242,8 @@ else
       WORDPRESS_CONTAINER_NAME=${WORDPRESS_CONTAINERS[$i]}
       WORDPRESS_PORT=${WORDPRESS_PORTS[$i]}
       if is_container_exists $WORDPRESS_CONTAINER_NAME; then
-          echo "WordPress container exists"
+          echo "$WORDPRESS_CONTAINER_NAME exists"
           if ! is_container_running $WORKER_CONTAINER_NAME; then
-
           ## restart worker db: since if master was off and is up again but worker is still down: it will avoid the rebuild of the wordpress container. 
           ## but if master db was down and is up again. toghether with the worker DB we will not have the poblem of rebuilding since the DB is always master DB
           ##configuration remains the same.
@@ -257,7 +256,7 @@ else
 
               if [ "$WORDPRESS_CONTAINER_NAME" == "wordpress1" ]; then
                 # Run the WordPress container
-                echo "Running WordPress container With Master DB Since worker DB is down..."
+                echo "Running $WORDPRESS_CONTAINER_NAME With Master DB Since worker DB is down..."
                 docker run -d \
                 --name $WORDPRESS_CONTAINER_NAME \
                 --network $NETWORK_NAME \
@@ -268,7 +267,7 @@ else
                 -p $WORDPRESS_PORT:80 \
                 wordpress:latest
 
-                echo "New WordPress with Master DB setup complete. Access it at http://localhost:$WORDPRESS_PORT"
+                echo "New $WORDPRESS_CONTAINER_NAME with Master DB setup complete. Access it at http://localhost:$WORDPRESS_PORT"
               fi 
 
           else
@@ -276,9 +275,9 @@ else
                         # Run the WordPress container if both DB are up and running and the wordpress container does not exist
           
               if [ "$WORDPRESS_CONTAINER_NAME" == "wordpress2" ]; then
-                echo "Stopping wordpress 2 and removing it..."
+                echo "Stopping $WORDPRESS_CONTAINER_NAME and removing it..."
                 docker rm -f $WORDPRESS_CONTAINER_NAME
-                echo "Running New WordPress container  with worker DB..."
+                echo "Running New $WORDPRESS_CONTAINER_NAME  with worker DB..."
                 WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
             
                 docker run -d \
@@ -291,19 +290,32 @@ else
                 -p $WORDPRESS_PORT:80 \
                 wordpress:latest
 
-                echo "WordPress 2 setup complete. Access it at http://localhost:$WORDPRESS_PORT"
-              else        
-                echo "WordPress one  is still up and running. Access it at http://localhost:$WORDPRESS_PORT"
+                echo "$WORDPRESS_CONTAINER_NAME setup complete. Access it at http://localhost:$WORDPRESS_PORT"
+              else 
+                  WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME 
+                  echo "Stopping $WORDPRESS_CONTAINER_NAME and removing it..."
+                  docker rm -f $WORDPRESS_CONTAINER_NAME    
+                  docker run -d \
+                    --name $WORDPRESS_CONTAINER_NAME \
+                    --network $NETWORK_NAME \
+                    -e WORDPRESS_DB_HOST=$WORDPRESS_DB_HOST:3306 \
+                    -e WORDPRESS_DB_NAME=$MYSQL_DATABASE \
+                    -e WORDPRESS_DB_USER=$MYSQL_USER \
+                    -e WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD \
+                    -p $WORDPRESS_PORT:80 \
+                    wordpress:latest
+
+                    echo "$WORDPRESS_CONTAINER_NAME setup complete. Access it at http://localhost:$WORDPRESS_PORT"
               fi
               
           fi 
       else        
           # Run the WordPress container if both DB are up and running and the wordpress container does not exist
           if [ "$WORDPRESS_CONTAINER_NAME" == "wordpress2" ]; then
-            echo "Running WordPress container for the first time with worker DB..."
+            echo "Running $WORDPRESS_CONTAINER_NAME for the first time with worker DB..."
               WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
           else
-          echo "Running WordPress container one for the first time with master DB..."
+          echo "Running $WORDPRESS_CONTAINER_NAME for the first time with master DB..."
               WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME
           fi
 
@@ -317,7 +329,7 @@ else
           -p $WORDPRESS_PORT:80 \
           wordpress:latest
 
-          echo "WordPress setup complete. Access it at http://localhost:$WORDPRESS_PORT"
+          echo "$WORDPRESS_CONTAINER_NAME setup complete. Access it at http://localhost:$WORDPRESS_PORT"
       fi
     done 
 fi
