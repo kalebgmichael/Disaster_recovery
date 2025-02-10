@@ -2,8 +2,8 @@
 Master_Worker_mysql/master_data/
 Master_Worker_mysql/slave_data/
 
-PILOT_LIGHT_MASTER_WORKER/master_data/
-PILOT_LIGHT_MASTER_WORKER/slave_data/
+MASTER_WORKER_NEW/master_data/
+MASTER_WORKER_NEW/slave_data/
 
 Multiple_site/master_data/
 Multiple_site/slave_data/
