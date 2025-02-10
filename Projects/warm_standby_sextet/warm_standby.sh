@@ -211,37 +211,6 @@ while $while_status; do
     echo "Replication setup complete."
   fi
 
-
-<<<<<<< HEAD
-  # Check if the master container is running, if not, use WORKER as the database host
-  WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME
-  if ! is_container_running $MASTER_CONTAINER_NAME; then
-    echo "Master container is not running, checking worker DB as the database."
-    WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
-      ## insert a for loop here 
-      for i in "${!WORDPRESS_CONTAINERS[@]}"; do
-        WORDPRESS_CONTAINER_NAME=${WORDPRESS_CONTAINERS[$i]}
-        WORDPRESS_PORT=${WORDPRESS_PORTS[$i]}
-        # Check if the WordPress container exists, and remove it if it does
-        if is_container_exists $WORDPRESS_CONTAINER_NAME; then
-        echo "Mater DB not working: checking WordPress container exists. Stopping and removing it..."
-        docker rm -f $WORDPRESS_CONTAINER_NAME
-        fi
-      done 
-      ## check if the worker db also works
-      if ! is_container_running $WORKER_CONTAINER_NAME; then
-          echo "Worker and Master DB not working: exiting ..."
-          docker rm -f $WORDPRESS_CONTAINER_NAME4
-          ## restart both containers
-          restart_mysql_container "$MASTER_CONTAINER_NAME" "$MASTER_DATA_DIR"
-          restart_mysql_container "$WORKER_CONTAINER_NAME" "$WORKER_DATA_DIR"
-      else
-        for i in "${!WORDPRESS_CONTAINERS_master_down[@]}"; do
-            WORDPRESS_CONTAINER_NAME=${WORDPRESS_CONTAINERS_master_down[$i]}
-            WORDPRESS_PORT=${WORDPRESS_PORTS_master_down[$i]}
-          # Run the WordPress container and worker db is working
-          echo "Running $WORDPRESS_CONTAINER_NAME With Worker DB Since Master DB is down..."
-=======
 # Check if the master container is running, if not, use WORKER as the database host
 WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME
 if ! is_container_running $MASTER_CONTAINER_NAME; then
@@ -357,7 +326,6 @@ else
           echo "Running WordPress container three for the first time with worker DB..."
               WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME:3306
           fi
->>>>>>> parent of fa873a1 (added a script to remove container four if worker is down: since it creates port clash with container 2)
           docker run -d \
           --name $WORDPRESS_CONTAINER_NAME \
           --network $NETWORK_NAME \
@@ -368,14 +336,12 @@ else
           -p $WORDPRESS_PORT:80 \
           wordpress:latest
 
-<<<<<<< HEAD
+
           echo "New $WORDPRESS_CONTAINER_NAME with worker DB setup complete. Access it at http://localhost:$WORDPRESS_PORT"
           ## restart master after the worker has taken over
           restart_mysql_container "$MASTER_CONTAINER_NAME" "$MASTER_DATA_DIR"
         done 
-=======
-          echo "WordPress setup complete. Access it at http://localhost:$WORDPRESS_PORT"
->>>>>>> parent of fa873a1 (added a script to remove container four if worker is down: since it creates port clash with container 2)
+
       fi
   else
       # master db working 
