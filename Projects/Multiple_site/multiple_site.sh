@@ -215,7 +215,7 @@ if ! is_container_running $MASTER_CONTAINER_NAME; then
     else
           if [ "$WORDPRESS_CONTAINER_NAME" == "wordpress2" ]; then
             echo "Running New WordPress container with worker DB... since master is down"
-              WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME:3306
+              WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
                # Run the WordPress container and worker db is working
             docker run -d \
             --name $WORDPRESS_CONTAINER_NAME \
@@ -279,7 +279,7 @@ else
                 echo "Stopping wordpress 2 and removing it..."
                 docker rm -f $WORDPRESS_CONTAINER_NAME
                 echo "Running New WordPress container  with worker DB..."
-                WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME:3306
+                WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
             
                 docker run -d \
                 --name $WORDPRESS_CONTAINER_NAME \
@@ -301,10 +301,10 @@ else
           # Run the WordPress container if both DB are up and running and the wordpress container does not exist
           if [ "$WORDPRESS_CONTAINER_NAME" == "wordpress2" ]; then
             echo "Running WordPress container for the first time with worker DB..."
-              WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME:3306
+              WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
           else
           echo "Running WordPress container one for the first time with master DB..."
-              WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME:3306
+              WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME
           fi
 
           docker run -d \
@@ -321,4 +321,3 @@ else
       fi
     done 
 fi
-
