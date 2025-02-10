@@ -275,10 +275,10 @@ else
 
                 if [ "$WORDPRESS_CONTAINER_NAME" == "wordpress3" ]; then
                 echo "Running WordPress container for the first time with master DB..."
-                  WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME:3306
+                  WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
                 else
                 echo "Running WordPress container three for the first time with worker DB..."
-                    WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME:3306
+                    WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME
                 fi
             
               # Run the WordPress container
@@ -305,10 +305,10 @@ else
           echo "Running WordPress container for the first time with master DB..."
           if [ "$WORDPRESS_CONTAINER_NAME" == "wordpress3" ]; then
             echo "Running WordPress container for the first time with master DB..."
-              WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME:3306
+              WORDPRESS_DB_HOST=$WORKER_CONTAINER_NAME
           else
           echo "Running WordPress container three for the first time with worker DB..."
-              WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME:3306
+              WORDPRESS_DB_HOST=$MASTER_CONTAINER_NAME
           fi
           docker run -d \
           --name $WORDPRESS_CONTAINER_NAME \
